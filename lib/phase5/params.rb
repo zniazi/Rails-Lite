@@ -1,4 +1,5 @@
 require 'uri'
+require 'pry-debugger'
 
 module Phase5
   class Params
@@ -9,6 +10,7 @@ module Phase5
     def initialize(req, route_params = {})
       @params = Hash.new
       parse_www_encoded_form(req.query_string) unless req.nil?
+      # parse_www_encoded_form(req.body) unless req.nil?
     end
 
     def [](key)
@@ -29,14 +31,15 @@ module Phase5
     # { "user" => { "address" => { "street" => "main", "zip" => "89436" } } }
     def parse_www_encoded_form(www_encoded_form)
       return nil if www_encoded_form.nil?
+
       URI.decode_www_form(www_encoded_form).each do |el|
         nested_keys = parse_key(el[0]).reverse!
-        params_hash = { nested_keys.shift => el[1] }
+        @params = { nested_keys.shift => el[1] }
         until nested_keys.empty?
-          params_hash = { nested_keys.shift => params_hash }
+          @params = { nested_keys.shift => @params }
         end
 
-        params_hash
+        @params
       end
     end
 
@@ -47,3 +50,6 @@ module Phase5
     end
   end
 end
+
+
+
