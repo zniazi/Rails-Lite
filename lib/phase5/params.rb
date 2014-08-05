@@ -7,7 +7,7 @@ module Phase5
     # 2. post body
     # 3. route params
     def initialize(req, route_params = {})
-      @params = {}
+      @params = req.query_string
     end
 
     def [](key)
@@ -27,7 +27,7 @@ module Phase5
     # should return
     # { "user" => { "address" => { "street" => "main", "zip" => "89436" } } }
     def parse_www_encoded_form(www_encoded_form)
-
+      URI.decode_www_form(www_encoded_form).each { |el| @params[el[0]] = el[1] }
     end
 
     # this should return an array
