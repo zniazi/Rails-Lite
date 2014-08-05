@@ -84,7 +84,6 @@ describe Phase4::ControllerBase do
     it "should store the session data" do
       cats_controller.session['test_key'] = 'test_value'
       cats_controller.send(method, *args)
-      debugger
       cookie = res.cookies.find { |c| c.name == '_rails_lite_app' }
       h = JSON.parse(cookie.value)
       expect(h['test_key']).to eq('test_value')

@@ -9,6 +9,8 @@ module Phase4
     end
 
     def render_content(content, type)
+      super
+      @session.store_session(self.res)
     end
 
     # method exposing a `Session` object
