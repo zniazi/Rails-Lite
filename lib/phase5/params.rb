@@ -29,13 +29,21 @@ module Phase5
     # { "user" => { "address" => { "street" => "main", "zip" => "89436" } } }
     def parse_www_encoded_form(www_encoded_form)
       return nil if www_encoded_form.nil?
-      URI.decode_www_form(www_encoded_form).each { |el| @params[el[0]] = el[1] }
+      URI.decode_www_form(www_encoded_form).each do |el|
+        nested_keys = parse_key(el[0]).reverse!
+        params_hash = { nested_keys.shift => el[1] }
+        until nested_keys.empty?
+          params_hash = { nested_keys.shift => params_hash }
+        end
+
+        params_hash
+      end
     end
 
     # this should return an array
     # user[address][street] should return ['user', 'address', 'street']
     def parse_key(key)
-      key.split(/\[\]|\[|\]/)
+      key.split(/\]\[|\[|\]/)
     end
   end
 end

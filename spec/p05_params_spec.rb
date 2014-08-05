@@ -25,6 +25,7 @@ describe Phase5::Params do
     it "handles single key and value" do
       req.query_string = "key=val"
       params = Phase5::Params.new(req)
+      debugger
       params["key"].should == "val"
     end
 
@@ -37,7 +38,6 @@ describe Phase5::Params do
 
     it "handles nested keys" do
       req.query_string = "user[address][street]=main"
-      debugger
       params = Phase5::Params.new(req)
       params["user"]["address"]["street"].should == "main"
     end
