@@ -35,17 +35,7 @@ module Phase5
     # this should return an array
     # user[address][street] should return ['user', 'address', 'street']
     def parse_key(key)
-      ind = []
-      key.each_char.with_index do |char, i|
-        ind << i if /\[+|\]+/ =~ char
-      end
-      arr = []
-      starting_index = 0
-      ind.each do |i|
-        arr << key[starting_index, i]
-        starting_index += i + 1
-      end
-      arr
+      key.split(/\[\]|\[|\]/)
     end
   end
 end
