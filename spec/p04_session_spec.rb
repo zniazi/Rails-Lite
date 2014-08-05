@@ -2,6 +2,8 @@ require 'webrick'
 require 'phase4/session'
 require 'phase4/controller_base'
 
+require 'pry-debugger'
+
 describe Phase4::Session do
   let(:req) { WEBrick::HTTPRequest.new(Logger: nil) }
   let(:res) { WEBrick::HTTPResponse.new(HTTPVersion: '1.0') }
@@ -82,6 +84,7 @@ describe Phase4::ControllerBase do
     it "should store the session data" do
       cats_controller.session['test_key'] = 'test_value'
       cats_controller.send(method, *args)
+      debugger
       cookie = res.cookies.find { |c| c.name == '_rails_lite_app' }
       h = JSON.parse(cookie.value)
       expect(h['test_key']).to eq('test_value')
