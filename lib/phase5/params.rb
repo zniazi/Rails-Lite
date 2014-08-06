@@ -10,7 +10,7 @@ module Phase5
     # 3. route params
     def initialize(req, route_params = {})
       @params = route_params
-      @params = parse_www_encoded_form(req.query_string) unless req.nil?
+      parse_www_encoded_form(req.query_string) unless req.nil?
       parse_www_encoded_form(req.body) unless req.nil?
     end
 
@@ -33,23 +33,23 @@ module Phase5
     # { "user" => { "address" => { "street" => "main", "zip" => "89436" } } }
     def parse_www_encoded_form(www_encoded_form)
       return nil if www_encoded_form.nil?
-      params = {}
+      @params ||= {}
       URI.decode_www_form(www_encoded_form).each do |el|
         if parse_key(el[0]).length > 1
           nested_keys = parse_key(el[0]).reverse!
           new_params = { nested_keys.shift => el[1] }
           new_params = { nested_keys.shift => new_params } until nested_keys.empty?
           key = new_params.keys.first
-          if params.keys.include?(key)
-            params[key] = params[key].merge(new_params[key])
+          if @params.keys.include?(key)
+            @params[key] = @params[key].merge(new_params[key])
           else
-            params[key] = new_params[key]
+            @params[key] = new_params[key]
           end
         else
-          params[el[0]] = el[1]
+          @params[el[0]] = el[1]
         end
       end
-      p params
+      p @params
     end
 
     # this should return an array
@@ -61,6 +61,6 @@ module Phase5
 end
 
 Phase5::Params.new(WEBrick::HTTPRequest.new(Logger: nil)).parse_www_encoded_form("cat[name]=tommy&cat[owner]=zak")
-# p Phase5::Params.new(WEBrick::HTTPRequest.new(Logger: nil)).parse_key("user_address_street")
+Phase5::Params.new(WEBrick::HTTPRequest.new(Logger: nil)).parse_www_encoded_form("key=val&key2=val2")
 
 
