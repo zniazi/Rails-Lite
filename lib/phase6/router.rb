@@ -20,7 +20,7 @@ module Phase6
       route_params = {}
       captures = Regexp.new(@pattern.to_s).match(req.path).captures
       names = Regexp.new(@pattern.to_s).match(req.path).names
-      route_params[captures.pop] = names.pop until captures.empty?
+      route_params[names.pop] = captures.pop until captures.empty?
       @controller_class.new(req, res, route_params).invoke_action(@action_name)
     end
   end
